@@ -3,12 +3,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Tests
 {
     [TestClass]
-    public class TodoDemo
+    public class TodoDemo : TodoTestBase
     {
         [TestMethod]
         public void TestMethod1()
         {
-            IWebDriver driver = new ChromeDri
+            
         }
     }
 }

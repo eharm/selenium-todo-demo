@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
 
 namespace Tests
 {
@@ -6,9 +7,9 @@ namespace Tests
     public class TodoDemo : TodoTestBase
     {
         [TestMethod]
-        public void TestMethod1()
+        public void CreateTodos()
         {
-            
+            TodoPage.NewTodo.SendKeys("Testing" + Keys.Enter);
         }
     }
 }

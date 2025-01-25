@@ -13,6 +13,7 @@ namespace Tests
             Driver = new ChromeDriver();
             this.TodoPage = new TodoPage(Driver);
             PageFactory.InitElements(Driver, this.TodoPage);
+            Driver.Manage().Window.Maximize();
         }
         public TodoPage TodoPage { get; private set; }
         protected IWebDriver Driver;
@@ -21,13 +22,15 @@ namespace Tests
         [TestInitialize]
         public void BeforeEach()
         {
-            Driver.Manage().Window.Maximize();
             Driver.Url = url;
         }
 
         [TestCleanup]
         public void AfterEach()
         {
+            (Driver as IJavaScriptExecutor).ExecuteScript("sessionStorage.clear()");
+            (Driver as IJavaScriptExecutor).ExecuteScript("localStorage.clear()");
+            Driver.Manage().Cookies.DeleteAllCookies();
             Driver.Quit();
             Driver.Dispose();
         }

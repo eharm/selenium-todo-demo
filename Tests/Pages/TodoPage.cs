@@ -1,5 +1,7 @@
 ﻿using OpenQA.Selenium;
 using SeleniumExtras.PageObjects;
+using System.Collections.ObjectModel;
+using Tests.Selenium;
 
 namespace Tests.Pages
 {
@@ -12,7 +14,12 @@ namespace Tests.Pages
 
         private readonly IWebDriver _driver;
 
-        [FindsBy(How = How.CssSelector, Using = ".new-todo")]
+        [FindsBy(How = How.ClassName, Using = "new-todo")]
+        [CacheLookup]
         public IWebElement NewTodo { get; set; }
+
+        public ReadOnlyCollection<IWebElement> AllTodos { get => _driver.FindElementsByDataTag("todo-item"); }
+
+        public IWebElement TodoCount { get => _driver.FindElementByDataTag("todo-count"); }
     }
 }

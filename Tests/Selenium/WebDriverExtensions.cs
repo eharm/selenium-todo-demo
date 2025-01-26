@@ -7,6 +7,12 @@ namespace Tests.Selenium
 {
     public static class WebDriverExtensions
     {
+        public static IWebElement FindElement(this IWebDriver drv, By by)
+        {
+            var wait = new WebDriverWait(drv, TimeSpan.FromSeconds(4));
+            return wait.Until(d => d.FindElement(by));
+        }
+        
         // Figure out how to turn turn this into a custom finds by attribute from DotNetSeleniumExtras.PageObjects
         // Should have to create a new class that inherits from AbstractFindsByAttribute
         public static IWebElement FindElementByDataTag(this IWebDriver drv, string tag)

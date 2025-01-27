@@ -44,6 +44,9 @@ namespace Tests
         [TestMethod]
         public void VerifyCheckUncheckFunctionality()
         {
+            var wait = new WebDriverWait(this.Driver, System.TimeSpan.FromSeconds(4));
+            wait.IgnoreExceptionTypes(typeof(AssertFailedException));
+
             // Create the the todos
             TodoPage.CreateTodo(todos);
 
@@ -60,7 +63,12 @@ namespace Tests
             firstTodo.FindElement(By.CssSelector("input.toggle")).Click();
 
             // Verify checked state
-            StringAssert.Matches(firstTodo.GetCssValue("class"), new Regex("completed"));
+            firstTodo = wait.Until(drv =>
+            {
+                IWebElement first = TodoPage.AllTodos.First();
+                StringAssert.Matches(first.GetAttribute("class"), new Regex("completed"));
+                return first;
+            });
             StringAssert.Contains(firstTodo.Text, todos[0]);
             StringAssert.Contains(TodoPage.TodoCount.Text, $"{todos.Length - 1} items left");
             Assert.AreEqual(1, TodoPage.ClearCompletedBtn.Count);
@@ -69,7 +77,12 @@ namespace Tests
             firstTodo.FindElement(By.CssSelector("input.toggle")).Click();
 
             // Verify the unchecked state
-            StringAssert.DoesNotMatch(firstTodo.GetCssValue("class"), new Regex("completed"));
+            firstTodo = wait.Until(drv =>
+            {
+                IWebElement first = TodoPage.AllTodos.First();
+                StringAssert.DoesNotMatch(first.GetAttribute("class"), new Regex("completed"));
+                return first;
+            });
             StringAssert.Contains(firstTodo.Text, todos[0]);
             StringAssert.Contains(TodoPage.TodoCount.Text, $"{todos.Length} items left");
             Assert.AreEqual(0, TodoPage.ClearCompletedBtn.Count);

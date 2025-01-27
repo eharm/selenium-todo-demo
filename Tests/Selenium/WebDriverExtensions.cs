@@ -18,13 +18,13 @@ namespace Tests.Selenium
         public static IWebElement FindElementByDataTag(this IWebDriver drv, string tag)
         {
             var wait = new WebDriverWait(drv, TimeSpan.FromSeconds(4));
-            return wait.Until(d => d.FindElement(By.CssSelector($"[data-testid=\"{tag}\"]")));
+            return wait.Until(d => d.FindElement(new ByDataTag(tag)));
         }
 
         public static ReadOnlyCollection<IWebElement> FindElementsByDataTag(this IWebDriver drv, string tag)
         {
             var wait = new WebDriverWait(drv, TimeSpan.FromSeconds(4));
-            return wait.Until(d => d.FindElements(By.CssSelector($"[data-testid=\"{tag}\"]")));
+            return wait.Until(d => d.FindElements(new ByDataTag(tag)));
         }
     }
 }

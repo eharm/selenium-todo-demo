@@ -88,5 +88,12 @@ namespace Tests
             StringAssert.Contains(TodoPage.TodoCount.Text, $"{todos.Length} items left");
             Assert.AreEqual(0, TodoPage.ClearCompletedBtn.Count);
         }
+
+        [TestMethod]
+        public void VerifyClearCompleted()
+        {
+            // Create the the todos
+            TodoPage.CreateTodo(todos);
+        }
     }
 }

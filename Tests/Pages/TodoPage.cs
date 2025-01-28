@@ -5,25 +5,18 @@ using Tests.Selenium;
 
 namespace Tests.Pages
 {
-    public class TodoPage
+    public class TodoPage(IWebDriver driver)
     {
-        public TodoPage(IWebDriver driver)
-        {
-            this._driver = driver;
-        }
-
-        private readonly IWebDriver _driver;
-
         #region properties
         [FindsBy(How = How.ClassName, Using = "new-todo")]
         [CacheLookup]
         public IWebElement NewTodo { get; set; }
 
-        public ReadOnlyCollection<IWebElement> ClearCompletedBtn { get => _driver.FindElements(By.ClassName("clear-completed")); }
+        public ReadOnlyCollection<IWebElement> ClearCompletedBtn { get => driver.FindElements(By.ClassName("clear-completed")); }
 
-        public ReadOnlyCollection<IWebElement> AllTodos { get => _driver.FindElementsByDataTag("todo-item"); }
+        public ReadOnlyCollection<IWebElement> AllTodos { get => driver.FindElementsByDataTag("todo-item"); }
 
-        public IWebElement TodoCount { get => _driver.FindElementByDataTag("todo-count"); }
+        public IWebElement TodoCount { get => driver.FindElementByDataTag("todo-count"); }
         #endregion properties
 
         #region methods

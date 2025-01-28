@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using SeleniumExtras.PageObjects;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Tests.Selenium;
 
 namespace Tests.Pages
@@ -12,9 +13,12 @@ namespace Tests.Pages
         [CacheLookup]
         public IWebElement NewTodo { get; set; }
 
-        public ReadOnlyCollection<IWebElement> ClearCompletedBtn { get => driver.FindElements(By.ClassName("clear-completed")); }
+        [FindsBy(How = How.ClassName, Using = "clear-completed")]
+        public IWebElement ClearCompletedBtn { get; set; }
 
         public ReadOnlyCollection<IWebElement> AllTodos { get => driver.FindElementsByDataTag("todo-item"); }
+
+        public IWebElement FirstTodo { get => AllTodos.First(); }
 
         public IWebElement TodoCount { get => driver.FindElementByDataTag("todo-count"); }
         #endregion properties

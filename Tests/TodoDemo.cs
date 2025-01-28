@@ -1,10 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using SeleniumExtras.PageObjects;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Tests.Assertions;
 using Tests.Selenium;
 
 namespace Tests
@@ -58,7 +57,7 @@ namespace Tests
             StringAssert.DoesNotMatch(firstTodo.GetCssValue("class"), new Regex("completed"));
             StringAssert.Contains(firstTodo.Text, todos[0]);
             StringAssert.Contains(TodoPage.TodoCount.Text, $"{todos.Length} items left");
-            Assert.AreEqual(0, TodoPage.ClearCompletedBtn.Count);
+            Driver.AssertElementExists(By.ClassName("clear-completed"), false);
 
             // Check first todo
             firstTodo.FindElement(By.CssSelector("input.toggle")).Click();
@@ -72,7 +71,7 @@ namespace Tests
             });
             StringAssert.Contains(firstTodo.Text, todos[0]);
             StringAssert.Contains(TodoPage.TodoCount.Text, $"{todos.Length - 1} items left");
-            Assert.AreEqual(1, TodoPage.ClearCompletedBtn.Count);
+            Driver.AssertElementExists(By.ClassName("clear-completed"), true);
 
             // Uncheck first todo
             firstTodo.FindElement(By.CssSelector("input.toggle")).Click();
@@ -86,14 +85,44 @@ namespace Tests
             });
             StringAssert.Contains(firstTodo.Text, todos[0]);
             StringAssert.Contains(TodoPage.TodoCount.Text, $"{todos.Length} items left");
-            Assert.AreEqual(0, TodoPage.ClearCompletedBtn.Count);
+            Driver.AssertElementExists(By.ClassName("clear-completed"), false);
         }
 
         [TestMethod]
         public void VerifyClearCompleted()
         {
+            var wait = new WebDriverWait(this.Driver, System.TimeSpan.FromSeconds(4));
+            wait.IgnoreExceptionTypes(typeof(AssertFailedException));
+
             // Create the the todos
             TodoPage.CreateTodo(todos);
+
+            foreach (var todo in todos)
+            {
+                IWebElement toggle = TodoPage.FirstTodo.FindElement(By.CssSelector("input.toggle"));
+
+                // Verify the unchecked state
+                StringAssert.Equals(TodoPage.FirstTodo.Text, todo);
+                Assert.IsFalse(bool.Parse(toggle.GetDomProperty("checked")));
+                // Clear completed button should not exist
+                Driver.AssertElementExists(By.ClassName("clear-completed"), false);
+
+                // Check first todo
+                toggle.Click();
+
+                // Verify checked state
+                toggle = wait.Until(d =>
+                {
+                    IWebElement label = TodoPage.FirstTodo.FindElement(new ByDataTag("todo-title"));
+                    // Ensure correct CSS is applied after completion
+                    StringAssert.Equals(label.GetCssValue("text-decoration-line"), "line-through");
+                    return TodoPage.FirstTodo.FindElement(By.CssSelector("input.toggle"));
+                });
+                Assert.IsTrue(bool.Parse(toggle.GetDomProperty("checked")));
+
+                // Clear completed todo
+                TodoPage.ClearCompletedBtn.Click();
+            }
         }
     }
 }

@@ -51,39 +51,35 @@ namespace Tests
             TodoPage.CreateTodo(todos);
 
             // Will use the first item in the list to check/uncheck
-            IWebElement firstTodo = TodoPage.AllTodos.First();
-
             // Verify the unchecked state
-            StringAssert.DoesNotMatch(firstTodo.GetCssValue("class"), new Regex("completed"));
-            StringAssert.Contains(firstTodo.Text, todos[0]);
+            StringAssert.DoesNotMatch(TodoPage.FirstTodo.GetCssValue("class"), new Regex("completed"));
+            StringAssert.Contains(TodoPage.FirstTodo.Text, todos[0]);
             StringAssert.Contains(TodoPage.TodoCount.Text, $"{todos.Length} items left");
             Driver.AssertElementExists(By.ClassName("clear-completed"), false);
 
             // Check first todo
-            firstTodo.FindElement(By.CssSelector("input.toggle")).Click();
+            TodoPage.FirstTodo.FindElement(By.CssSelector("input.toggle")).Click();
 
             // Verify checked state
-            firstTodo = wait.Until(drv =>
+            wait.Until(drv =>
             {
-                IWebElement first = TodoPage.AllTodos.First();
-                StringAssert.Matches(first.GetAttribute("class"), new Regex("completed"));
-                return first;
+                StringAssert.Matches(TodoPage.FirstTodo.GetAttribute("class"), new Regex("completed"));
+                return true;
             });
-            StringAssert.Contains(firstTodo.Text, todos[0]);
+            StringAssert.Contains(TodoPage.FirstTodo.Text, todos[0]);
             StringAssert.Contains(TodoPage.TodoCount.Text, $"{todos.Length - 1} items left");
             Driver.AssertElementExists(By.ClassName("clear-completed"), true);
 
             // Uncheck first todo
-            firstTodo.FindElement(By.CssSelector("input.toggle")).Click();
+            TodoPage.FirstTodo.FindElement(By.CssSelector("input.toggle")).Click();
 
             // Verify the unchecked state
-            firstTodo = wait.Until(drv =>
+            wait.Until(drv =>
             {
-                IWebElement first = TodoPage.AllTodos.First();
-                StringAssert.DoesNotMatch(first.GetAttribute("class"), new Regex("completed"));
-                return first;
+                StringAssert.DoesNotMatch(TodoPage.FirstTodo.GetAttribute("class"), new Regex("completed"));
+                return true;
             });
-            StringAssert.Contains(firstTodo.Text, todos[0]);
+            StringAssert.Contains(TodoPage.FirstTodo.Text, todos[0]);
             StringAssert.Contains(TodoPage.TodoCount.Text, $"{todos.Length} items left");
             Driver.AssertElementExists(By.ClassName("clear-completed"), false);
         }

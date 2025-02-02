@@ -16,24 +16,24 @@ namespace Tests.Pages
         [FindsBy(How = How.ClassName, Using = "clear-completed")]
         public IWebElement ClearCompletedBtn { get; set; }
 
-        public ReadOnlyCollection<IWebElement> AllTodos { get => driver.FindElementsByDataTag("todo-item"); }
+        public ReadOnlyCollection<IWebElement> AllTodos => driver.FindElementsByDataTag("todo-item");
 
-        public IWebElement FirstTodo { get => AllTodos.First(); }
+        public IWebElement FirstTodo => AllTodos.First();
 
-        public IWebElement TodoCount { get => driver.FindElementByDataTag("todo-count"); }
+        public IWebElement TodoCount => driver.FindElementByDataTag("todo-count");
         #endregion properties
 
         #region methods
         public void CreateTodo(string newTodo)
         {
-            this.NewTodo.SendKeys(newTodo + Keys.Enter);
+            NewTodo.SendKeys(newTodo + Keys.Enter);
         }
 
         public void CreateTodo(string[] newTodos)
         {
-            foreach (var todo in newTodos)
+            foreach (string todo in newTodos)
             {
-                this.CreateTodo(todo);
+                CreateTodo(todo);
             }
         }
         #endregion methods
